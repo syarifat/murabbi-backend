@@ -148,6 +148,19 @@ class GuruController extends Controller
         $surah = Surah::findOrFail($data['surah_id']);
         abort_if($data['ayat_selesai'] > $surah->jumlah_ayat, 422, 'Ayat selesai melebihi jumlah ayat surah.');
 
+        // Validasi kelanjutan ayat jika bukan status mengulang
+        $lastAyat = Setoran::where('santri_id', $data['santri_id'])
+            ->where('surah_id', $data['surah_id'])
+            ->where('status', '!=', 'mengulang')
+            ->max('ayat_selesai');
+
+        if ($lastAyat && $data['status'] !== 'mengulang' && $data['ayat_mulai'] <= $lastAyat) {
+            return response()->json([
+                'success' => false,
+                'message' => "Santri sudah menyelesaikan hingga ayat $lastAyat. Silakan lanjutkan dari ayat " . ($lastAyat + 1) . " atau pilih status 'mengulang'.",
+            ], 422);
+        }
+
         $setoran = Setoran::create($data + [
             'tahun_ajaran_id' => $tahunAjaran->id,
             'guru_id' => $request->user()->id,
@@ -204,11 +217,21 @@ class GuruController extends Controller
             ->values()
             ->toArray();
 
+        // Ambil ayat tertinggi yang sudah disetorkan santri per surah (status bukan mengulang)
+        $lastAyatBySurah = Setoran::where('santri_id', $santri->id)
+            ->where('status', '!=', 'mengulang')
+            ->groupBy('surah_id')
+            ->selectRaw('surah_id, MAX(ayat_selesai) as max_ayat')
+            ->pluck('max_ayat', 'surah_id')
+            ->mapWithKeys(fn ($maxAyat, $surahId) => [(int) $surahId => (int) $maxAyat])
+            ->toArray();
+
         return response()->json([
             'success' => true,
             'data' => [
                 'santri_id' => (int) $santri->id,
                 'completed_surah_ids' => $completedSurahIds,
+                'last_ayat_by_surah' => $lastAyatBySurah,
             ],
         ]);
     }
