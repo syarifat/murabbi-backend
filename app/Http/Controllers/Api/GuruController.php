@@ -37,13 +37,22 @@ class GuruController extends Controller
         $guruId = $request->user()->id;
         $kelasIds = $this->kelasIdsGuru($guruId, $tahunAjaran->id);
 
+        $santriIdsBinaan = Santri::where('tahun_ajaran_id', $tahunAjaran->id)->whereIn('kelas_id', $kelasIds)->pluck('id');
+        $santriSudahSetorHariIniIds = Setoran::where('tahun_ajaran_id', $tahunAjaran->id)
+            ->whereIn('santri_id', $santriIdsBinaan)
+            ->whereDate('waktu_setor', today())
+            ->pluck('santri_id')
+            ->unique()
+            ->values()
+            ->toArray();
+
         // Get all kelas pengampu with santris
         $pengampus = PengampuKelas::with(['kelas', 'kelas.santris'])
             ->where('guru_id', $guruId)
             ->where('tahun_ajaran_id', $tahunAjaran->id)
             ->get();
 
-        $kelasBinaan = $pengampus->map(function ($p) {
+        $kelasBinaan = $pengampus->map(function ($p) use ($santriSudahSetorHariIniIds) {
             return [
                 'id' => $p->kelas->id,
                 'nama_kelas' => $p->kelas->nama_kelas,
@@ -54,16 +63,10 @@ class GuruController extends Controller
                     'nama_lengkap' => $s->nama_lengkap,
                     'nis' => $s->nis,
                     'progress_pct' => $s->progress_pct,
+                    'sudah_setor_hari_ini' => in_array($s->id, $santriSudahSetorHariIniIds),
                 ])->values()->toArray(),
             ];
         })->values()->toArray();
-
-        $santriIdsBinaan = Santri::where('tahun_ajaran_id', $tahunAjaran->id)->whereIn('kelas_id', $kelasIds)->pluck('id');
-        $santriSudahSetorHariIni = Setoran::where('tahun_ajaran_id', $tahunAjaran->id)
-            ->whereIn('santri_id', $santriIdsBinaan)
-            ->whereDate('waktu_setor', today())
-            ->distinct('santri_id')
-            ->count('santri_id');
 
         return response()->json([
             'success' => true,
@@ -73,8 +76,9 @@ class GuruController extends Controller
                 'kelas_binaan' => $kelasBinaan,
                 'stats' => [
                     'santri_terampu' => $santriIdsBinaan->count(),
-                    'setoran_hari_ini' => $santriSudahSetorHariIni,
+                    'setoran_hari_ini' => count($santriSudahSetorHariIniIds),
                 ],
+                'santri_sudah_setor_today_ids' => $santriSudahSetorHariIniIds,
                 'recent_feed' => Setoran::with(['santri', 'surah'])
                     ->where('tahun_ajaran_id', $tahunAjaran->id)
                     ->where('guru_id', $guruId)
@@ -103,7 +107,19 @@ class GuruController extends Controller
             $query->where('kelas_id', $request->kelas_id);
         }
 
-        return response()->json(['success' => true, 'data' => $query->get()]);
+        $santriSudahSetorIds = Setoran::where('tahun_ajaran_id', $tahunAjaran->id)
+            ->whereDate('waktu_setor', today())
+            ->pluck('santri_id')
+            ->unique()
+            ->toArray();
+
+        $santris = $query->get()->map(function ($s) use ($santriSudahSetorIds) {
+            $arr = $s->toArray();
+            $arr['sudah_setor_hari_ini'] = in_array($s->id, $santriSudahSetorIds);
+            return $arr;
+        });
+
+        return response()->json(['success' => true, 'data' => $santris]);
     }
 
     public function listSurah()
