@@ -20,6 +20,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/master/kelas', [GuruController::class, 'listKelas']);
         Route::get('/master/surahs', [GuruController::class, 'listSurah']);
         Route::get('/santris', [GuruController::class, 'listSantri']);
+        Route::get('/santris/{santriId}/completed-surahs', [GuruController::class, 'completedSurahs']);
         Route::get('/setorans', [GuruController::class, 'listSetoran']);
         Route::post('/setorans', [GuruController::class, 'storeSetoran']);
         Route::put('/setorans/{id}', [GuruController::class, 'updateSetoran']);

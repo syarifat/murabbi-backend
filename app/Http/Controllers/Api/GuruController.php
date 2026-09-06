@@ -184,4 +184,32 @@ class GuruController extends Controller
 
         return response()->json(['success' => true, 'message' => 'Data setoran berhasil dihapus']);
     }
+
+    public function completedSurahs(Request $request, $santriId)
+    {
+        $tahunAjaran = $this->tahunAjaranAktif();
+        $kelasIds = $this->kelasIdsGuru($request->user()->id, $tahunAjaran->id);
+
+        $santri = Santri::where('tahun_ajaran_id', $tahunAjaran->id)
+            ->whereIn('kelas_id', $kelasIds)
+            ->findOrFail($santriId);
+
+        $completedSurahIds = Setoran::where('santri_id', $santri->id)
+            ->where('status', '!=', 'mengulang')
+            ->join('surahs', 'setorans.surah_id', '=', 'surahs.id')
+            ->whereRaw('setorans.ayat_selesai >= surahs.jumlah_ayat')
+            ->distinct()
+            ->pluck('surahs.id')
+            ->map(fn ($id) => (int) $id)
+            ->values()
+            ->toArray();
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'santri_id' => (int) $santri->id,
+                'completed_surah_ids' => $completedSurahIds,
+            ],
+        ]);
+    }
 }
