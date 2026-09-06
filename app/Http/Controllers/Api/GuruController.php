@@ -101,13 +101,13 @@ class GuruController extends Controller
 
     public function listSurah()
     {
-        // Use Al-Quran Cloud API for complete Quran data
-        $surahs = $this->alQuranService->getAllSurah();
+        // Surah hafalan harus berasal dari database lokal (Juz 30: Surah 78-114) agar ID cocok 1:1 dengan primary key tabel surahs
+        $surahs = Surah::orderBy('nomor')->get();
 
         return response()->json([
             'success' => true,
             'data' => $surahs,
-            'source' => 'alquran.cloud',
+            'source' => 'database',
         ]);
     }
 

@@ -27,7 +27,7 @@ class AlQuranCloudService
                         // Find matching local Surah record to get database ID
                         $localSurah = Surah::where('nomor', $surah['number'])->first();
                         return [
-                            'id' => $localSurah?->id ?? $surah['number'],
+                            'id' => $localSurah?->id,
                             'nomor' => $surah['number'],
                             'nama_latin' => $surah['englishName'],
                             'nama_arab' => $surah['name'],
