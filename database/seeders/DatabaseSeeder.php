@@ -230,7 +230,7 @@ class DatabaseSeeder extends Seeder
                     'kelas_id' => $kelas->id,
                     'wali_id' => $waliUser->id,
                     'target_juz' => $kd['guru_idx'] < 3 ? 'Juz 30' : 'Juz 15',
-                    'progress_pct' => rand(0, 100),
+                    'progress_pct' => 0,
                 ]);
                 $allSantris[] = $santri;
             }

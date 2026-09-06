@@ -191,6 +191,8 @@ class GuruController extends Controller
             'waktu_setor' => now(),
         ]);
 
+        Santri::find($data['santri_id'])?->updateProgressPct();
+
         return response()->json(['success' => true, 'message' => 'Setoran hafalan berhasil disimpan', 'data' => $setoran->load(['santri', 'surah'])], 201);
     }
 
@@ -208,6 +210,7 @@ class GuruController extends Controller
         ]);
 
         $setoran->update($data);
+        $setoran->santri?->updateProgressPct();
 
         return response()->json(['success' => true, 'message' => 'Data setoran berhasil diperbarui', 'data' => $setoran->load(['santri', 'surah'])]);
     }
@@ -216,7 +219,9 @@ class GuruController extends Controller
     {
         $tahunAjaran = $this->tahunAjaranAktif();
         $setoran = Setoran::where('tahun_ajaran_id', $tahunAjaran->id)->where('guru_id', $request->user()->id)->findOrFail($id);
+        $santri = $setoran->santri;
         $setoran->delete();
+        $santri?->updateProgressPct();
 
         return response()->json(['success' => true, 'message' => 'Data setoran berhasil dihapus']);
     }
