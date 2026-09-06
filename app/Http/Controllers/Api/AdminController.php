@@ -492,6 +492,18 @@ class AdminController extends Controller
         ]);
     }
 
+    // Sync Surahs - Populate/sync all 114 surahs to local database
+    public function syncSurahs(AlQuranCloudService $alQuranService)
+    {
+        $count = $alQuranService->syncAllSurahsToDatabase();
+
+        return response()->json([
+            'success' => true,
+            'message' => "Berhasil sinkronisasi $count surah ke database",
+            'data' => Surah::orderBy('nomor')->get(),
+        ]);
+    }
+
     // Riwayat Setoran - All setorans with filters
     public function listSetorans(Request $request)
     {

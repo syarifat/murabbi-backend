@@ -59,6 +59,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/master/ortu', [AdminController::class, 'listOrtu']);
         Route::put('/master/ortu/{user}', [AdminController::class, 'updateOrtu']);
         Route::get('/master/surahs', [AdminController::class, 'masterSurahs']);
+        Route::post('/master/surahs/sync', [AdminController::class, 'syncSurahs']);
 
         // Rombel Routes
         Route::get('/rombel', [AdminController::class, 'rombelList']);

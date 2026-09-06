@@ -101,7 +101,7 @@ class GuruController extends Controller
 
     public function listSurah()
     {
-        // Surah hafalan harus berasal dari database lokal (Juz 30: Surah 78-114) agar ID cocok 1:1 dengan primary key tabel surahs
+        // Daftar 114 Surah Al-Qur'an (Juz 1 s/d 30) dari database lokal
         $surahs = Surah::orderBy('nomor')->get();
 
         return response()->json([
