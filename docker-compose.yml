@@ -1,0 +1,67 @@
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: murabbi_app
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+    networks:
+      - murabbi_network
+    depends_on:
+      - mysql
+
+  web:
+    image: nginx:alpine
+    container_name: murabbi_web
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - murabbi_network
+    depends_on:
+      - app
+
+  mysql:
+    image: mysql:8.0
+    container_name: murabbi_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: murabbi_db
+      MYSQL_USER: murabbi_user
+      MYSQL_PASSWORD: secretpassword
+      MYSQL_ROOT_PASSWORD: rootpassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - murabbi_network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: murabbi_phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+    ports:
+      - "8080:80"
+    networks:
+      - murabbi_network
+    depends_on:
+      - mysql
+
+networks:
+  murabbi_network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+    driver: local
