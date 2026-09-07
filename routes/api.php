@@ -30,6 +30,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('ortu')->middleware('role:ortu')->group(function () {
         Route::get('/dashboard', [OrtuController::class, 'dashboard']);
         Route::get('/santri/{santriId}/timeline', [OrtuController::class, 'timeline']);
+        Route::get('/santri/{santriId}/rekap', [OrtuController::class, 'rekap']);
     });
 
     Route::prefix('admin')->middleware('role:admin')->group(function () {
