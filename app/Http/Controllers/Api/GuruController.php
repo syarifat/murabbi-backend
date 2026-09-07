@@ -52,7 +52,18 @@ class GuruController extends Controller
             ->where('tahun_ajaran_id', $tahunAjaran->id)
             ->get();
 
-        $kelasBinaan = $pengampus->map(function ($p) use ($santriSudahSetorHariIniIds) {
+        // Hitung jumlah surat selesai per santri binaan
+        $completedSurahCountBySantri = Setoran::join('surahs', 'setorans.surah_id', '=', 'surahs.id')
+            ->whereIn('setorans.santri_id', $santriIdsBinaan)
+            ->where('setorans.status', '!=', 'mengulang')
+            ->whereColumn('setorans.ayat_selesai', '>=', 'surahs.jumlah_ayat')
+            ->select('setorans.santri_id', 'setorans.surah_id')
+            ->distinct()
+            ->get()
+            ->groupBy('santri_id')
+            ->map(fn ($items) => $items->count());
+
+        $kelasBinaan = $pengampus->map(function ($p) use ($santriSudahSetorHariIniIds, $completedSurahCountBySantri) {
             return [
                 'id' => $p->kelas->id,
                 'nama_kelas' => $p->kelas->nama_kelas,
@@ -63,6 +74,7 @@ class GuruController extends Controller
                     'nama_lengkap' => $s->nama_lengkap,
                     'nis' => $s->nis,
                     'progress_pct' => $s->progress_pct,
+                    'surat_selesai' => $completedSurahCountBySantri[$s->id] ?? 0,
                     'sudah_setor_hari_ini' => in_array($s->id, $santriSudahSetorHariIniIds),
                 ])->values()->toArray(),
             ];
@@ -113,9 +125,22 @@ class GuruController extends Controller
             ->unique()
             ->toArray();
 
-        $santris = $query->get()->map(function ($s) use ($santriSudahSetorIds) {
+        $santriIds = (clone $query)->pluck('id');
+
+        $completedSurahCountBySantri = Setoran::join('surahs', 'setorans.surah_id', '=', 'surahs.id')
+            ->whereIn('setorans.santri_id', $santriIds)
+            ->where('setorans.status', '!=', 'mengulang')
+            ->whereColumn('setorans.ayat_selesai', '>=', 'surahs.jumlah_ayat')
+            ->select('setorans.santri_id', 'setorans.surah_id')
+            ->distinct()
+            ->get()
+            ->groupBy('santri_id')
+            ->map(fn ($items) => $items->count());
+
+        $santris = $query->get()->map(function ($s) use ($santriSudahSetorIds, $completedSurahCountBySantri) {
             $arr = $s->toArray();
             $arr['sudah_setor_hari_ini'] = in_array($s->id, $santriSudahSetorIds);
+            $arr['surat_selesai'] = $completedSurahCountBySantri[$s->id] ?? 0;
             return $arr;
         });
 
