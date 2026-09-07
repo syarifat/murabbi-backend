@@ -30,20 +30,41 @@ class DatabaseSeeder extends Seeder
             'role' => 'admin',
         ]);
 
-        // 3. Guru/Ustadz (9 ustadz untuk 9 kelas)
+        // 3. Guru/Ustadz (5 Ustadz/Ustadzah untuk 9 kelas)
         $guruData = [
-            ['name' => 'Ust. Ahmad Fauzi, S.Pd.I', 'email' => 'ahmad@murabbi.id', 'nip' => '197501012001011001'],
-            ['name' => 'Ust. Hasan Basri, M.Pd', 'email' => 'hasan@murabbi.id', 'nip' => '197602152002011002'],
-            ['name' => 'Ust. Abdullah Zidane', 'email' => 'zidane@murabbi.id', 'nip' => '198003202003011003'],
-            ['name' => 'Ust. Muhammad Iqbal, Lc', 'email' => 'iqbal@murabbi.id', 'nip' => '198104252004011004'],
-            ['name' => 'Ust. Khalid Walidain', 'email' => 'khalid@murabbi.id', 'nip' => '198207082005011005'],
-            ['name' => 'Ust. Yusuf Hamdani', 'email' => 'yusuf@murabbi.id', 'nip' => '198309152006011006'],
-            ['name' => 'Ust. Sulaiman Akbar', 'email' => 'sulaiman@murabbi.id', 'nip' => '198410202007011007'],
-            ['name' => 'Ust. Farid Najmuddin', 'email' => 'farid@murabbi.id', 'nip' => '198512052008011008'],
-            ['name' => 'Ust. Tajul Arifin', 'email' => 'tajul@murabbi.id', 'nip' => '198603182009011009'],
+            [
+                'name' => 'Ust. Ahmad Fauzi, S.Pd.I',
+                'email' => 'ahmad@murabbi.id',
+                'nip' => '198501102010011001',
+                'jadwal' => 'Senin - Kamis, 07:30 - 09:00 WIB',
+            ],
+            [
+                'name' => 'Ust. Hasan Basri, M.Pd',
+                'email' => 'hasan@murabbi.id',
+                'nip' => '198603152011011002',
+                'jadwal' => 'Senin - Kamis, 07:30 - 09:00 WIB',
+            ],
+            [
+                'name' => 'Ust. Abdullah Zidane, Lc',
+                'email' => 'zidane@murabbi.id',
+                'nip' => '198807202012011003',
+                'jadwal' => 'Senin - Kamis, 13:30 - 15:00 WIB',
+            ],
+            [
+                'name' => 'Ustadzah Siti Aminah, S.Ag',
+                'email' => 'aminah@murabbi.id',
+                'nip' => '199005122013022004',
+                'jadwal' => 'Senin - Kamis, 13:30 - 15:00 WIB',
+            ],
+            [
+                'name' => 'Ust. Muhammad Iqbal, M.Ag',
+                'email' => 'iqbal@murabbi.id',
+                'nip' => '199209182014011005',
+                'jadwal' => 'Senin - Kamis, 07:30 - 09:00 WIB',
+            ],
         ];
 
-        $guruIds = [];
+        $guruUsers = [];
         foreach ($guruData as $g) {
             $user = User::create([
                 'name' => $g['name'],
@@ -52,7 +73,7 @@ class DatabaseSeeder extends Seeder
                 'role' => 'guru',
                 'nip' => $g['nip'],
             ]);
-            $guruIds[] = $user->id;
+            $guruUsers[] = $user;
         }
 
         // 4. Create Surahs (All 114 Surahs)
@@ -177,109 +198,251 @@ class DatabaseSeeder extends Seeder
             Surah::create($s);
         }
 
-        // 5. 9 Kelas
-        $kelasData = [
-            ['nama' => '7A', 'guru_idx' => 0, 'count' => 30],
-            ['nama' => '7B', 'guru_idx' => 1, 'count' => 30],
-            ['nama' => '7C', 'guru_idx' => 2, 'count' => 29],
-            ['nama' => '8A', 'guru_idx' => 3, 'count' => 30],
-            ['nama' => '8B', 'guru_idx' => 4, 'count' => 29],
-            ['nama' => '8C', 'guru_idx' => 5, 'count' => 30],
-            ['nama' => '9A', 'guru_idx' => 6, 'count' => 30],
-            ['nama' => '9B', 'guru_idx' => 7, 'count' => 29],
-            ['nama' => '9C', 'guru_idx' => 8, 'count' => 30],
+        // 5. 9 Kelas (7A, 7B, 7C, 8A, 8B, 8C, 9A, 9B, 9C) dengan 25-30 siswa per kelas
+        // 5 Guru memegang 9 kelas:
+        // Guru 0: 7A & 7B
+        // Guru 1: 7C & 8A
+        // Guru 2: 8B & 8C
+        // Guru 3: 9A & 9B
+        // Guru 4: 9C
+        $kelasList = [
+            ['nama' => '7A', 'tingkat' => 7, 'guru_idx' => 0, 'count' => 27],
+            ['nama' => '7B', 'tingkat' => 7, 'guru_idx' => 0, 'count' => 27],
+            ['nama' => '7C', 'tingkat' => 7, 'guru_idx' => 1, 'count' => 26],
+            ['nama' => '8A', 'tingkat' => 8, 'guru_idx' => 1, 'count' => 27],
+            ['nama' => '8B', 'tingkat' => 8, 'guru_idx' => 2, 'count' => 27],
+            ['nama' => '8C', 'tingkat' => 8, 'guru_idx' => 2, 'count' => 26],
+            ['nama' => '9A', 'tingkat' => 9, 'guru_idx' => 3, 'count' => 27],
+            ['nama' => '9B', 'tingkat' => 9, 'guru_idx' => 3, 'count' => 27],
+            ['nama' => '9C', 'tingkat' => 9, 'guru_idx' => 4, 'count' => 26],
         ];
 
-        $allSantris = [];
+        // 5 Akun Wali Utama untuk Demo & Testing (tersedia di panduan PDF)
+        $primaryWaliData = [
+            [
+                'email' => 'wali1@murabbi.id',
+                'wali_name' => 'Bpk. Hendra Pratama',
+                'santri_name' => 'Muhammad Farhan',
+                'kelas' => '7A',
+            ],
+            [
+                'email' => 'wali2@murabbi.id',
+                'wali_name' => 'Ibu Rina Wijaya',
+                'santri_name' => 'Aisha Nur Fadilah',
+                'kelas' => '7B',
+            ],
+            [
+                'email' => 'wali3@murabbi.id',
+                'wali_name' => 'Bpk. Agus Santoso',
+                'santri_name' => 'Rizki Hidayat',
+                'kelas' => '8A',
+            ],
+            [
+                'email' => 'wali4@murabbi.id',
+                'wali_name' => 'Ibu Dewi Lestari',
+                'santri_name' => 'Naufal Firdaus',
+                'kelas' => '8B',
+            ],
+            [
+                'email' => 'wali5@murabbi.id',
+                'wali_name' => 'Bpk. Budi Setiawan',
+                'santri_name' => 'Zaky Maulana',
+                'kelas' => '9A',
+            ],
+        ];
 
-        foreach ($kelasData as $kd) {
+        $primaryWaliUsers = [];
+        foreach ($primaryWaliData as $pw) {
+            $u = User::create([
+                'name' => $pw['wali_name'],
+                'email' => $pw['email'],
+                'password' => Hash::make('password123'),
+                'role' => 'ortu',
+                'no_hp' => '0812' . rand(10000000, 99999999),
+            ]);
+            $primaryWaliUsers[$pw['kelas']] = [
+                'user' => $u,
+                'santri_name' => $pw['santri_name'],
+            ];
+        }
+
+        $allSantris = [];
+        $santriByGuru = [];
+
+        $prefixes = ['Muhammad', 'Ahmad', 'Hassan', 'Abdullah', 'Farhan', 'Zain', 'Rizki', 'Dimas', 'Fajar', 'Bayu', 'Reza', 'Galang', 'Arya', 'Fikri', 'Haikal', 'Alif', 'Naufal', 'Raffi', 'Azka', 'Zaky', 'Aryo', 'Raka', 'Arga', 'Yoga', 'Bagus', 'Danang', 'Eko', 'Feri', 'Gilang', 'Hendra', 'Bilal', 'Hamzah', 'Thoriq', 'Ilyas', 'Luqman', 'Sulthan', 'Taufiq', 'Akbar', 'Fadlan', 'Habibi'];
+        $suffixes = ['Pratama', 'Saputra', 'Santoso', 'Wijaya', 'Kusuma', 'Nugroho', 'Hidayat', 'Permana', 'Rahman', 'Firdaus', 'Maulana', 'Makruf', 'Alfarisy', 'Wardani', 'Sodiq', 'Nabil', 'Faris', 'Hilmi', 'Zafran', 'Ayyubi', 'Fauzi', 'Hakim', 'Nashir', 'Wafa', 'Zaelani', 'Ihsan', 'Rabbani', 'Mubarok', 'Syahputra', 'Ramadhan'];
+
+        $usedNames = [];
+        $nisCounter = 1;
+
+        foreach ($kelasList as $kd) {
             $kelas = KelasRombel::create([
                 'nama_kelas' => 'Kelas ' . $kd['nama'],
+                'tingkat' => $kd['tingkat'],
                 'tahun_ajaran_id' => $ta->id,
             ]);
 
-            // Mapping guru
+            $guru = $guruUsers[$kd['guru_idx']];
+
             PengampuKelas::create([
                 'tahun_ajaran_id' => $ta->id,
-                'guru_id' => $guruIds[$kd['guru_idx']],
+                'guru_id' => $guru->id,
                 'kelas_id' => $kelas->id,
+                'jadwal_halaqah' => $guruData[$kd['guru_idx']]['jadwal'],
             ]);
 
-            // Create santris
-            $prefixes = ['Muhammad', 'Ahmad', 'Hassan', 'Abdullah', 'Farhan', 'Zain', 'Rizki', 'Dimas', 'Fajar', 'Bayu', 'Reza', 'Galang', 'Arya', 'Fikri', 'Haikal', 'Alif', 'Naufal', 'Raffi', 'Azka', 'Zaky', 'Aryo', 'Raka', 'Arga', 'Yoga', 'Bagus', 'Danang', 'Eko', 'Feri', 'Gilang', 'Hendra'];
-            $suffixed = ['Ayyubi', 'Tsani', 'Fauzi', 'Hakim', 'Nashir', 'Wafa', 'Saidi', 'Zaelani', 'Pratama', 'Saputra', 'Santoso', 'Wijaya', 'Kusuma', 'Nugroho', 'Hidayat', 'Permana', 'Rahman', 'Firdaus', 'Maulana', 'Makruf', 'Auf', 'Asadi', 'Usman', 'Alfarisy', 'Wardani', 'Sodiq', 'Nabil', 'Faris', 'Hilmi', 'Zafran'];
-
-            $used = [];
             for ($i = 0; $i < $kd['count']; $i++) {
-                do {
-                    $name = $prefixes[array_rand($prefixes)] . ' ' . $suffixed[array_rand($suffixed)];
-                } while (in_array($name, $used));
-                $used[] = $name;
+                // Santri pertama di kelas tertentu dipasangkan dengan 5 Akun Wali Utama
+                $isPrimaryWali = ($i === 0 && isset($primaryWaliUsers[$kd['nama']]));
+                if ($isPrimaryWali) {
+                    $name = $primaryWaliUsers[$kd['nama']]['santri_name'];
+                    $waliUser = $primaryWaliUsers[$kd['nama']]['user'];
+                } else {
+                    do {
+                        $name = $prefixes[array_rand($prefixes)] . ' ' . $suffixes[array_rand($suffixes)];
+                    } while (in_array($name, $usedNames));
+                    $usedNames[] = $name;
 
-                $waliUser = User::create([
-                    'name' => 'Ibu ' . explode(' ', $name)[1] . ' (Wali)',
-                    'email' => 'wali_' . ($kd['guru_idx'] + 1) . '_' . ($i + 1) . '@murabbi.id',
-                    'password' => Hash::make('password123'),
-                    'role' => 'ortu',
-                ]);
+                    $waliUser = User::create([
+                        'name' => 'Wali ' . $name,
+                        'email' => 'wali_' . strtolower($kd['nama']) . '_' . ($i + 1) . '@murabbi.id',
+                        'password' => Hash::make('password123'),
+                        'role' => 'ortu',
+                        'no_hp' => '0813' . rand(10000000, 99999999),
+                    ]);
+                }
+
+                $nis = '2026' . str_pad($kd['tingkat'], 2, '0', STR_PAD_LEFT) . str_pad($nisCounter++, 4, '0', STR_PAD_LEFT);
 
                 $santri = Santri::create([
                     'tahun_ajaran_id' => $ta->id,
-                    'nis' => '2026' . str_pad(($kd['guru_idx'] + 1), 2, '0', STR_PAD_LEFT) . str_pad(($i + 1), 3, '0', STR_PAD_LEFT),
+                    'nis' => $nis,
                     'nama_lengkap' => $name,
                     'kelas_id' => $kelas->id,
                     'wali_id' => $waliUser->id,
-                    'target_juz' => $kd['guru_idx'] < 3 ? 'Juz 30' : 'Juz 15',
+                    'target_juz' => 'Juz 30',
                     'progress_pct' => 0,
+                    'status_aktif' => true,
                 ]);
-                $allSantris[] = $santri;
+
+                $allSantris[] = [
+                    'model' => $santri,
+                    'guru_id' => $guru->id,
+                    'tingkat' => $kd['tingkat'],
+                    'kelas_nama' => $kd['nama'],
+                    'index_in_class' => $i,
+                ];
+
+                $santriByGuru[$guru->id][] = $santri;
             }
         }
 
-        // 6. Setoran untuk 1 bulan terakhir
-        $surahIds = Surah::pluck('id')->toArray();
-        // Enum: lancar, kurang, mengulang
-        $statuses = ['lancar', 'lancar', 'lancar', 'mengulang', 'kurang'];
+        // 6. Pembuatan Setoran Realistis 1 Bulan ke Belakang (30 hari terakhir)
+        // Urutan surah pendek Juz 30 (nomor 114 mundur ke 78)
+        $juz30Surahs = Surah::where('nomor', '>=', 78)->orderBy('nomor', 'desc')->get()->keyBy('nomor');
+        $shortSurahNumbers = [114, 113, 112, 111, 110, 109, 108, 107, 106, 105, 104, 103, 102, 101, 100, 99, 98, 97, 96, 95, 94, 93, 92, 91, 90, 89, 88, 87, 86, 85, 84, 83, 82, 81, 80, 79, 78];
 
-        $startDate = now()->subMonth();
-        $endDate = now();
+        $totalSetorans = 0;
+        $now = now();
 
-        $setoranCount = 0;
-        foreach ($allSantris as $santri) {
-            $count = rand(5, 15);
-            $dates = $this->randomDates($count, $startDate, $endDate);
+        foreach ($allSantris as $sInfo) {
+            $santri = $sInfo['model'];
+            $guruId = $sInfo['guru_id'];
+            $tingkat = $sInfo['tingkat'];
+            $idxInClass = $sInfo['index_in_class'];
 
-            foreach ($dates as $date) {
-                $ayatMulai = rand(1, 30);
-                Setoran::create([
-                    'tahun_ajaran_id' => $ta->id,
-                    'santri_id' => $santri->id,
-                    'guru_id' => $guruIds[array_rand($guruIds)],
-                    'surah_id' => $surahIds[array_rand($surahIds)],
-                    'ayat_mulai' => $ayatMulai,
-                    'ayat_selesai' => $ayatMulai + rand(1, 10),
-                    'status' => $statuses[array_rand($statuses)],
-                    'catatan' => null,
-                    'waktu_setor' => $date,
-                ]);
-                $setoranCount++;
+            // Jumlah surah yang sudah dikuasai santri:
+            // Kelas 7: 4 s/d 9 surah
+            // Kelas 8: 8 s/d 15 surah
+            // Kelas 9: 14 s/d 24 surah
+            $surahCount = $tingkat === 7 ? rand(4, 9) : ($tingkat === 8 ? rand(8, 15) : rand(14, 24));
+            $chosenSurahNos = array_slice($shortSurahNumbers, 0, $surahCount);
+
+            // Tentukan apakah santri ini setor HARI INI (5-8 santri pertama per kelas)
+            $setorHariIni = ($idxInClass < rand(6, 8));
+
+            // Generate tanggal setoran berurutan dalam 30 hari terakhir
+            $daysAgo = 28;
+            $step = max(1, (int) floor(28 / count($chosenSurahNos)));
+
+            foreach ($chosenSurahNos as $k => $sNo) {
+                $surah = $juz30Surahs[$sNo] ?? null;
+                if (!$surah) continue;
+
+                $isLastSurah = ($k === count($chosenSurahNos) - 1);
+
+                // Tanggal setoran
+                if ($isLastSurah && $setorHariIni) {
+                    $setorTime = $now->copy()->subHours(rand(1, 5))->subMinutes(rand(5, 50));
+                } else {
+                    $days = max(1, $daysAgo - ($k * $step));
+                    $setorTime = $now->copy()->subDays($days)->setHour(rand(8, 15))->setMinute(rand(10, 55));
+                }
+
+                // Untuk surah yang panjang (ayat > 15), bisa ada 2 setoran bertahap
+                if ($surah->jumlah_ayat > 15 && $isLastSurah && !$setorHariIni) {
+                    // Setoran sebagian (PROSES)
+                    $ayatSelesai = rand(1, min(10, $surah->jumlah_ayat - 1));
+                    Setoran::create([
+                        'tahun_ajaran_id' => $ta->id,
+                        'santri_id' => $santri->id,
+                        'guru_id' => $guruId,
+                        'surah_id' => $surah->id,
+                        'ayat_mulai' => 1,
+                        'ayat_selesai' => $ayatSelesai,
+                        'status' => 'lancar',
+                        'nilai' => 90,
+                        'catatan' => 'Bacaan tajwid baik, lanjutkan hafalan.',
+                        'waktu_setor' => $setorTime,
+                    ]);
+                    $totalSetorans++;
+                } else {
+                    // Setoran tuntas
+                    // Kadang ada 1 riwayat evaluasi 'kurang' sebelum lancar
+                    if (rand(1, 10) == 1) {
+                        Setoran::create([
+                            'tahun_ajaran_id' => $ta->id,
+                            'santri_id' => $santri->id,
+                            'guru_id' => $guruId,
+                            'surah_id' => $surah->id,
+                            'ayat_mulai' => 1,
+                            'ayat_selesai' => $surah->jumlah_ayat,
+                            'status' => 'kurang',
+                            'nilai' => 75,
+                            'catatan' => 'Perhatikan makhraj huruf dan dengung (ghunnah).',
+                            'waktu_setor' => $setorTime->copy()->subDays(1),
+                        ]);
+                        $totalSetorans++;
+                    }
+
+                    Setoran::create([
+                        'tahun_ajaran_id' => $ta->id,
+                        'santri_id' => $santri->id,
+                        'guru_id' => $guruId,
+                        'surah_id' => $surah->id,
+                        'ayat_mulai' => 1,
+                        'ayat_selesai' => $surah->jumlah_ayat,
+                        'status' => 'lancar',
+                        'nilai' => rand(90, 98),
+                        'catatan' => 'Alhamdulillah lancar dan mutqin.',
+                        'waktu_setor' => $setorTime,
+                    ]);
+                    $totalSetorans++;
+                }
             }
+
+            // Hitung progress_pct riil dan mutlak matematis untuk santri ini
+            $santri->updateProgressPct();
         }
 
-        echo "Seeded: 1 TA, 1 Admin, 9 Guru, 9 Kelas, " . count($allSantris) . " Santris, $setoranCount Setorans, " . count($surahs) . " Surahs\n";
-    }
-
-    private function randomDates(int $count, $start, $end): array
-    {
-        $dates = [];
-        $startTs = $start->timestamp;
-        $endTs = $end->timestamp;
-
-        for ($i = 0; $i < $count; $i++) {
-            $randomTs = rand($startTs, $endTs);
-            $dates[] = date('Y-m-d H:i:s', $randomTs);
-        }
-        sort($dates);
-        return $dates;
+        echo "Seeded Realistic Tahfidz Data:\n";
+        echo "- 1 Tahun Ajaran Aktif (2026/2027)\n";
+        echo "- 1 Administrator (admin@murabbi.id)\n";
+        echo "- 5 Guru Ustadz/Ustadzah (5 Akun)\n";
+        echo "- 9 Kelas (7A, 7B, 7C, 8A, 8B, 8C, 9A, 9B, 9C)\n";
+        echo "- " . count($allSantris) . " Santri (26-27 santri per kelas)\n";
+        echo "- 5 Akun Wali Utama (wali1 s/d wali5@murabbi.id) + " . (count($allSantris) - 5) . " Akun Wali Lainnya\n";
+        echo "- $totalSetorans Data Setoran Realistis (30 hari terakhir s/d hari ini)\n";
+        echo "- Seluruh 114 Surah Al-Qur'an\n";
     }
 }
