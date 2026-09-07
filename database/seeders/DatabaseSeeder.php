@@ -30,35 +30,35 @@ class DatabaseSeeder extends Seeder
             'role' => 'admin',
         ]);
 
-        // 3. Guru/Ustadz (5 Ustadz/Ustadzah untuk 9 kelas)
+        // 3. Guru/Ustadz (5 Akun Guru Anonim untuk 9 kelas)
         $guruData = [
             [
-                'name' => 'Ust. Ahmad Fauzi, S.Pd.I',
-                'email' => 'ahmad@murabbi.id',
+                'name' => 'Guru 1',
+                'email' => 'guru1@murabbi.id',
                 'nip' => '198501102010011001',
                 'jadwal' => 'Senin - Kamis, 07:30 - 09:00 WIB',
             ],
             [
-                'name' => 'Ust. Hasan Basri, M.Pd',
-                'email' => 'hasan@murabbi.id',
+                'name' => 'Guru 2',
+                'email' => 'guru2@murabbi.id',
                 'nip' => '198603152011011002',
                 'jadwal' => 'Senin - Kamis, 07:30 - 09:00 WIB',
             ],
             [
-                'name' => 'Ust. Abdullah Zidane, Lc',
-                'email' => 'zidane@murabbi.id',
+                'name' => 'Guru 3',
+                'email' => 'guru3@murabbi.id',
                 'nip' => '198807202012011003',
                 'jadwal' => 'Senin - Kamis, 13:30 - 15:00 WIB',
             ],
             [
-                'name' => 'Ustadzah Siti Aminah, S.Ag',
-                'email' => 'aminah@murabbi.id',
+                'name' => 'Guru 4',
+                'email' => 'guru4@murabbi.id',
                 'nip' => '199005122013022004',
                 'jadwal' => 'Senin - Kamis, 13:30 - 15:00 WIB',
             ],
             [
-                'name' => 'Ust. Muhammad Iqbal, M.Ag',
-                'email' => 'iqbal@murabbi.id',
+                'name' => 'Guru 5',
+                'email' => 'guru5@murabbi.id',
                 'nip' => '199209182014011005',
                 'jadwal' => 'Senin - Kamis, 07:30 - 09:00 WIB',
             ],
@@ -218,61 +218,22 @@ class DatabaseSeeder extends Seeder
         ];
 
         // 5 Akun Wali Utama untuk Demo & Testing (tersedia di panduan PDF)
-        $primaryWaliData = [
-            [
-                'email' => 'wali1@murabbi.id',
-                'wali_name' => 'Bpk. Hendra Pratama',
-                'santri_name' => 'Muhammad Farhan',
-                'kelas' => '7A',
-            ],
-            [
-                'email' => 'wali2@murabbi.id',
-                'wali_name' => 'Ibu Rina Wijaya',
-                'santri_name' => 'Aisha Nur Fadilah',
-                'kelas' => '7B',
-            ],
-            [
-                'email' => 'wali3@murabbi.id',
-                'wali_name' => 'Bpk. Agus Santoso',
-                'santri_name' => 'Rizki Hidayat',
-                'kelas' => '8A',
-            ],
-            [
-                'email' => 'wali4@murabbi.id',
-                'wali_name' => 'Ibu Dewi Lestari',
-                'santri_name' => 'Naufal Firdaus',
-                'kelas' => '8B',
-            ],
-            [
-                'email' => 'wali5@murabbi.id',
-                'wali_name' => 'Bpk. Budi Setiawan',
-                'santri_name' => 'Zaky Maulana',
-                'kelas' => '9A',
-            ],
+        // Wali 1 -> Siswa 1 (Kelas 7A, Guru 1)
+        // Wali 2 -> Siswa 2 (Kelas 7B, Guru 1)
+        // Wali 3 -> Siswa 3 (Kelas 8A, Guru 2)
+        // Wali 4 -> Siswa 4 (Kelas 8B, Guru 3)
+        // Wali 5 -> Siswa 5 (Kelas 9A, Guru 4)
+        $primaryWaliMap = [
+            '7A' => 1,
+            '7B' => 2,
+            '8A' => 3,
+            '8B' => 4,
+            '9A' => 5,
         ];
 
-        $primaryWaliUsers = [];
-        foreach ($primaryWaliData as $pw) {
-            $u = User::create([
-                'name' => $pw['wali_name'],
-                'email' => $pw['email'],
-                'password' => Hash::make('password123'),
-                'role' => 'ortu',
-                'no_hp' => '0812' . rand(10000000, 99999999),
-            ]);
-            $primaryWaliUsers[$pw['kelas']] = [
-                'user' => $u,
-                'santri_name' => $pw['santri_name'],
-            ];
-        }
-
+        $nextStudentId = 6;
         $allSantris = [];
         $santriByGuru = [];
-
-        $prefixes = ['Muhammad', 'Ahmad', 'Hassan', 'Abdullah', 'Farhan', 'Zain', 'Rizki', 'Dimas', 'Fajar', 'Bayu', 'Reza', 'Galang', 'Arya', 'Fikri', 'Haikal', 'Alif', 'Naufal', 'Raffi', 'Azka', 'Zaky', 'Aryo', 'Raka', 'Arga', 'Yoga', 'Bagus', 'Danang', 'Eko', 'Feri', 'Gilang', 'Hendra', 'Bilal', 'Hamzah', 'Thoriq', 'Ilyas', 'Luqman', 'Sulthan', 'Taufiq', 'Akbar', 'Fadlan', 'Habibi'];
-        $suffixes = ['Pratama', 'Saputra', 'Santoso', 'Wijaya', 'Kusuma', 'Nugroho', 'Hidayat', 'Permana', 'Rahman', 'Firdaus', 'Maulana', 'Makruf', 'Alfarisy', 'Wardani', 'Sodiq', 'Nabil', 'Faris', 'Hilmi', 'Zafran', 'Ayyubi', 'Fauzi', 'Hakim', 'Nashir', 'Wafa', 'Zaelani', 'Ihsan', 'Rabbani', 'Mubarok', 'Syahputra', 'Ramadhan'];
-
-        $usedNames = [];
         $nisCounter = 1;
 
         foreach ($kelasList as $kd) {
@@ -292,32 +253,30 @@ class DatabaseSeeder extends Seeder
             ]);
 
             for ($i = 0; $i < $kd['count']; $i++) {
-                // Santri pertama di kelas tertentu dipasangkan dengan 5 Akun Wali Utama
-                $isPrimaryWali = ($i === 0 && isset($primaryWaliUsers[$kd['nama']]));
-                if ($isPrimaryWali) {
-                    $name = $primaryWaliUsers[$kd['nama']]['santri_name'];
-                    $waliUser = $primaryWaliUsers[$kd['nama']]['user'];
+                if ($i === 0 && isset($primaryWaliMap[$kd['nama']])) {
+                    $studentNum = $primaryWaliMap[$kd['nama']];
                 } else {
-                    do {
-                        $name = $prefixes[array_rand($prefixes)] . ' ' . $suffixes[array_rand($suffixes)];
-                    } while (in_array($name, $usedNames));
-                    $usedNames[] = $name;
-
-                    $waliUser = User::create([
-                        'name' => 'Wali ' . $name,
-                        'email' => 'wali_' . strtolower($kd['nama']) . '_' . ($i + 1) . '@murabbi.id',
-                        'password' => Hash::make('password123'),
-                        'role' => 'ortu',
-                        'no_hp' => '0813' . rand(10000000, 99999999),
-                    ]);
+                    $studentNum = $nextStudentId++;
                 }
+
+                $santriName = 'Siswa ' . $studentNum;
+                $waliName = 'Wali ' . $studentNum;
+                $waliEmail = 'wali' . $studentNum . '@murabbi.id';
+
+                $waliUser = User::create([
+                    'name' => $waliName,
+                    'email' => $waliEmail,
+                    'password' => Hash::make('password123'),
+                    'role' => 'ortu',
+                    'no_hp' => '0812' . rand(10000000, 99999999),
+                ]);
 
                 $nis = '2026' . str_pad($kd['tingkat'], 2, '0', STR_PAD_LEFT) . str_pad($nisCounter++, 4, '0', STR_PAD_LEFT);
 
                 $santri = Santri::create([
                     'tahun_ajaran_id' => $ta->id,
                     'nis' => $nis,
-                    'nama_lengkap' => $name,
+                    'nama_lengkap' => $santriName,
                     'kelas_id' => $kelas->id,
                     'wali_id' => $waliUser->id,
                     'target_juz' => 'Juz 30',

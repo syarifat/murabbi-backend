@@ -32,11 +32,11 @@ $sql .= "(1, 'Administrator Utama', 'admin@murabbi.id', '$passwordHash', 'admin'
 
 // 3. 5 Guru
 $guruData = [
-    ['id' => 2, 'name' => 'Ust. Ahmad Fauzi, S.Pd.I', 'email' => 'ahmad@murabbi.id', 'nip' => '198501102010011001', 'no_hp' => '081234567801', 'jadwal' => 'Senin - Kamis, 07:30 - 09:00 WIB'],
-    ['id' => 3, 'name' => 'Ust. Hasan Basri, M.Pd', 'email' => 'hasan@murabbi.id', 'nip' => '198603152011011002', 'no_hp' => '081234567802', 'jadwal' => 'Senin - Kamis, 07:30 - 09:00 WIB'],
-    ['id' => 4, 'name' => 'Ust. Abdullah Zidane, Lc', 'email' => 'zidane@murabbi.id', 'nip' => '198807202012011003', 'no_hp' => '081234567803', 'jadwal' => 'Senin - Kamis, 13:30 - 15:00 WIB'],
-    ['id' => 5, 'name' => 'Ustadzah Siti Aminah, S.Ag', 'email' => 'aminah@murabbi.id', 'nip' => '199005122013022004', 'no_hp' => '081234567804', 'jadwal' => 'Senin - Kamis, 13:30 - 15:00 WIB'],
-    ['id' => 6, 'name' => 'Ust. Muhammad Iqbal, M.Ag', 'email' => 'iqbal@murabbi.id', 'nip' => '199209182014011005', 'no_hp' => '081234567805', 'jadwal' => 'Senin - Kamis, 07:30 - 09:00 WIB'],
+    ['id' => 2, 'name' => 'Guru 1', 'email' => 'guru1@murabbi.id', 'nip' => '198501102010011001', 'no_hp' => '081234567801', 'jadwal' => 'Senin - Kamis, 07:30 - 09:00 WIB'],
+    ['id' => 3, 'name' => 'Guru 2', 'email' => 'guru2@murabbi.id', 'nip' => '198603152011011002', 'no_hp' => '081234567802', 'jadwal' => 'Senin - Kamis, 07:30 - 09:00 WIB'],
+    ['id' => 4, 'name' => 'Guru 3', 'email' => 'guru3@murabbi.id', 'nip' => '198807202012011003', 'no_hp' => '081234567803', 'jadwal' => 'Senin - Kamis, 13:30 - 15:00 WIB'],
+    ['id' => 5, 'name' => 'Guru 4', 'email' => 'guru4@murabbi.id', 'nip' => '199005122013022004', 'no_hp' => '081234567804', 'jadwal' => 'Senin - Kamis, 13:30 - 15:00 WIB'],
+    ['id' => 6, 'name' => 'Guru 5', 'email' => 'guru5@murabbi.id', 'nip' => '199209182014011005', 'no_hp' => '081234567805', 'jadwal' => 'Senin - Kamis, 07:30 - 09:00 WIB'],
 ];
 
 $sql .= "-- 3. 5 Akun Guru\n";
@@ -86,66 +86,47 @@ foreach ($kelasList as $idx => $k) {
 }
 $sql .= implode(",\n", $pengampuInserts) . ";\n\n";
 
-// 6. Wali & Santri
-$primaryWaliData = [
-    ['email' => 'wali1@murabbi.id', 'name' => 'Bpk. Hendra Pratama', 'santri' => 'Muhammad Farhan', 'kelas' => '7A'],
-    ['email' => 'wali2@murabbi.id', 'name' => 'Ibu Rina Wijaya', 'santri' => 'Aisha Nur Fadilah', 'kelas' => '7B'],
-    ['email' => 'wali3@murabbi.id', 'name' => 'Bpk. Agus Santoso', 'santri' => 'Rizki Hidayat', 'kelas' => '8A'],
-    ['email' => 'wali4@murabbi.id', 'name' => 'Ibu Dewi Lestari', 'santri' => 'Naufal Firdaus', 'kelas' => '8B'],
-    ['email' => 'wali5@murabbi.id', 'name' => 'Bpk. Budi Setiawan', 'santri' => 'Zaky Maulana', 'kelas' => '9A'],
+// 6. Wali & Santri (240 Siswa & 240 Wali)
+$primaryWaliMap = [
+    '7A' => 1,
+    '7B' => 2,
+    '8A' => 3,
+    '8B' => 4,
+    '9A' => 5,
 ];
 
-$primaryWaliMap = [];
-foreach ($primaryWaliData as $pw) {
-    $primaryWaliMap[$pw['kelas']] = $pw;
-}
-
-$prefixes = ['Muhammad', 'Ahmad', 'Hassan', 'Abdullah', 'Farhan', 'Zain', 'Rizki', 'Dimas', 'Fajar', 'Bayu', 'Reza', 'Galang', 'Arya', 'Fikri', 'Haikal', 'Alif', 'Naufal', 'Raffi', 'Azka', 'Zaky', 'Aryo', 'Raka', 'Arga', 'Yoga', 'Bagus', 'Danang', 'Eko', 'Feri', 'Gilang', 'Hendra', 'Bilal', 'Hamzah', 'Thoriq', 'Ilyas', 'Luqman', 'Sulthan', 'Taufiq', 'Akbar', 'Fadlan', 'Habibi'];
-$suffixes = ['Pratama', 'Saputra', 'Santoso', 'Wijaya', 'Kusuma', 'Nugroho', 'Hidayat', 'Permana', 'Rahman', 'Firdaus', 'Maulana', 'Makruf', 'Alfarisy', 'Wardani', 'Sodiq', 'Nabil', 'Faris', 'Hilmi', 'Zafran', 'Ayyubi', 'Fauzi', 'Hakim', 'Nashir', 'Wafa', 'Zaelani', 'Ihsan', 'Rabbani', 'Mubarok', 'Syahputra', 'Ramadhan'];
-
-$userId = 7;
-$santriId = 1;
+$nextStudentId = 6;
 $allSantris = [];
-$usedNames = [];
-
 $userInserts = [];
 $santriInserts = [];
 
 foreach ($kelasList as $k) {
     for ($i = 0; $i < $k['count']; $i++) {
-        $isPrimary = ($i === 0 && isset($primaryWaliMap[$k['nama']]));
-        if ($isPrimary) {
-            $pw = $primaryWaliMap[$k['nama']];
-            $waliEmail = $pw['email'];
-            $waliName = $pw['name'];
-            $santriName = $pw['santri'];
+        if ($i === 0 && isset($primaryWaliMap[$k['nama']])) {
+            $studentNum = $primaryWaliMap[$k['nama']];
         } else {
-            do {
-                $santriName = $prefixes[array_rand($prefixes)] . ' ' . $suffixes[array_rand($suffixes)];
-            } while (in_array($santriName, $usedNames));
-            $usedNames[] = $santriName;
-
-            $waliEmail = 'wali_' . strtolower($k['nama']) . '_' . ($i + 1) . '@murabbi.id';
-            $waliName = 'Wali ' . $santriName;
+            $studentNum = $nextStudentId++;
         }
 
-        $wUserId = $userId++;
+        $waliEmail = 'wali' . $studentNum . '@murabbi.id';
+        $waliName = 'Wali ' . $studentNum;
+        $santriName = 'Siswa ' . $studentNum;
+
+        $wUserId = 6 + $studentNum;
         $phone = '0812' . rand(10000000, 99999999);
         $userInserts[] = "($wUserId, '$waliName', '$waliEmail', '$passwordHash', 'ortu', NULL, '$phone', '$now', '$now')";
 
-        $nis = '2026' . str_pad($k['tingkat'], 2, '0', STR_PAD_LEFT) . str_pad($santriId, 4, '0', STR_PAD_LEFT);
-        $santriInserts[] = "($santriId, 1, '$nis', '$santriName', {$k['id']}, $wUserId, 'Juz 30', 0, 1, '$now', '$now')";
+        $nis = '2026' . str_pad($k['tingkat'], 2, '0', STR_PAD_LEFT) . str_pad($studentNum, 4, '0', STR_PAD_LEFT);
+        $santriInserts[] = "($studentNum, 1, '$nis', '$santriName', {$k['id']}, $wUserId, 'Juz 30', 0, 1, '$now', '$now')";
 
         $allSantris[] = [
-            'id' => $santriId,
+            'id' => $studentNum,
             'name' => $santriName,
             'kelas_id' => $k['id'],
             'guru_id' => $k['guru_id'],
             'tingkat' => $k['tingkat'],
             'idx' => $i,
         ];
-
-        $santriId++;
     }
 }
 
