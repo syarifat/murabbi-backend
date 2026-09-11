@@ -209,18 +209,21 @@ class AdminController extends Controller
     public function updateSantri(Request $request, Santri $santri)
     {
         $tahunAjaran = $this->tahunAjaranAktif();
-        abort_unless($santri->tahun_ajaran_id === $tahunAjaran->id, 404);
 
         $data = $request->validate([
             'nis' => ['sometimes', 'string', 'max:50', Rule::unique('santris', 'nis')->ignore($santri->id)],
             'nama_lengkap' => ['sometimes', 'string', 'max:255'],
-            'kelas_id' => ['nullable', Rule::exists('kelas_rombels', 'id')->where('tahun_ajaran_id', $tahunAjaran->id)],
+            'kelas_id' => ['nullable', 'exists:kelas_rombels,id'],
             'wali_id' => ['nullable', Rule::exists('users', 'id')->where('role', 'ortu')],
             'alamat' => ['nullable', 'string', 'max:500'],
             'target_juz' => ['nullable', 'string', 'max:50'],
             'progress_pct' => ['sometimes', 'integer', 'min:0', 'max:100'],
             'status_aktif' => ['sometimes', 'boolean'],
         ]);
+
+        if (empty($santri->tahun_ajaran_id) && $tahunAjaran) {
+            $data['tahun_ajaran_id'] = $tahunAjaran->id;
+        }
 
         $santri->update($data);
 
