@@ -165,6 +165,12 @@ class GuruController extends Controller
         $kelasIds = $this->kelasIdsGuru($request->user()->id, $tahunAjaran->id);
         $query = Setoran::with(['santri.kelas', 'surah', 'guru'])->where('tahun_ajaran_id', $tahunAjaran->id)->where('guru_id', $request->user()->id)->latest('waktu_setor');
 
+        if ($request->filled('tanggal')) {
+            $query->whereDate('waktu_setor', $request->tanggal);
+        } elseif ($request->filled('date')) {
+            $query->whereDate('waktu_setor', $request->date);
+        }
+
         if ($request->filled('status') && $request->status !== 'Semua') {
             $query->where('status', strtolower($request->status));
         }
