@@ -53,4 +53,30 @@ class AuthController extends Controller
 
         return response()->json(['success' => true, 'message' => 'Berhasil keluar dari akun']);
     }
+
+    public function changePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required',
+            'new_password' => 'required|min:6',
+        ]);
+
+        $user = $request->user();
+
+        if (! Hash::check($request->current_password, $user->password)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Kata sandi saat ini (lama) tidak sesuai.',
+            ], 422);
+        }
+
+        $user->update([
+            'password' => Hash::make($request->new_password),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Kata sandi berhasil diperbarui.',
+        ]);
+    }
 }

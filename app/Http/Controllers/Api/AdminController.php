@@ -12,6 +12,7 @@ use App\Models\TahunAjaran;
 use App\Models\User;
 use App\Services\AlQuranCloudService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
 class AdminController extends Controller
@@ -120,6 +121,18 @@ class AdminController extends Controller
         $user->delete();
 
         return response()->json(['success' => true, 'message' => 'Pengguna dihapus']);
+    }
+
+    public function resetPassword(User $user)
+    {
+        $user->update([
+            'password' => Hash::make('murabbiapp'),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Kata sandi pengguna ' . $user->name . ' berhasil direset menjadi "murabbiapp".',
+        ]);
     }
 
     public function destroySantri(Santri $santri)

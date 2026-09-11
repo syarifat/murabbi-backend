@@ -14,6 +14,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/change-password', [AuthController::class, 'changePassword']);
 
     Route::prefix('guru')->middleware('role:guru')->group(function () {
         Route::get('/dashboard', [GuruController::class, 'dashboard']);
@@ -40,6 +41,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/users', [AdminController::class, 'store']);
         Route::put('/users/{user}', [AdminController::class, 'update']);
         Route::delete('/users/{user}', [AdminController::class, 'destroy']);
+        Route::post('/users/{user}/reset-password', [AdminController::class, 'resetPassword']);
         Route::get('/santris', [AdminController::class, 'listSantri']);
         Route::post('/santris', [AdminController::class, 'storeSantri']);
         Route::put('/santris/{santri}', [AdminController::class, 'updateSantri']);
