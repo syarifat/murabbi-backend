@@ -15,7 +15,7 @@ return new class extends Migration
             $table->string('nama_lengkap');
             $table->foreignId('kelas_id')->nullable()->constrained('kelas_rombels')->nullOnDelete();
             $table->foreignId('wali_id')->nullable()->constrained('users')->nullOnDelete();
-            $table->string('target_juz')->default('Juz 30');
+            $table->string('target_juz')->nullable()->default(null);
             $table->integer('progress_pct')->default(0);
             $table->boolean('status_aktif')->default(true);
             $table->timestamps();

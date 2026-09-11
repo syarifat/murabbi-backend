@@ -50,8 +50,8 @@ class Santri extends Model
             ->get();
 
         $totalAyatHafal = $setorans->sum('max_ayat');
-        $targetAyat = ($this->target_juz === 'Juz 30') ? 564 : 6236;
-        $pct = $targetAyat > 0 ? min(100, (int) round(($totalAyatHafal / $targetAyat) * 100)) : 0;
+        $targetAyat = 6236;
+        $pct = min(100, (int) round(($totalAyatHafal / $targetAyat) * 100));
 
         $this->update(['progress_pct' => $pct]);
 

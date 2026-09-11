@@ -190,7 +190,7 @@ class AdminController extends Controller
             'nama_lengkap' => $data['nama_lengkap'],
             'kelas_id' => $data['kelas_id'] ?? null,
             'wali_id' => $waliId,
-            'target_juz' => $data['target_juz'] ?? 'Juz 30',
+            'target_juz' => $data['target_juz'] ?? null,
             'progress_pct' => 0,
             'alamat' => $data['alamat'] ?? null,
         ]);

@@ -36,31 +36,26 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Guru 1',
                 'email' => 'guru1@murabbi.id',
                 'nip' => '198501102010011001',
-                'jadwal' => 'Senin - Kamis, 07:30 - 09:00 WIB',
             ],
             [
                 'name' => 'Guru 2',
                 'email' => 'guru2@murabbi.id',
                 'nip' => '198603152011011002',
-                'jadwal' => 'Senin - Kamis, 07:30 - 09:00 WIB',
             ],
             [
                 'name' => 'Guru 3',
                 'email' => 'guru3@murabbi.id',
                 'nip' => '198807202012011003',
-                'jadwal' => 'Senin - Kamis, 13:30 - 15:00 WIB',
             ],
             [
                 'name' => 'Guru 4',
                 'email' => 'guru4@murabbi.id',
                 'nip' => '199005122013022004',
-                'jadwal' => 'Senin - Kamis, 13:30 - 15:00 WIB',
             ],
             [
                 'name' => 'Guru 5',
                 'email' => 'guru5@murabbi.id',
                 'nip' => '199209182014011005',
-                'jadwal' => 'Senin - Kamis, 07:30 - 09:00 WIB',
             ],
         ];
 
@@ -249,7 +244,7 @@ class DatabaseSeeder extends Seeder
                 'tahun_ajaran_id' => $ta->id,
                 'guru_id' => $guru->id,
                 'kelas_id' => $kelas->id,
-                'jadwal_halaqah' => $guruData[$kd['guru_idx']]['jadwal'],
+                'jadwal_halaqah' => null,
             ]);
 
             for ($i = 0; $i < $kd['count']; $i++) {
@@ -279,7 +274,7 @@ class DatabaseSeeder extends Seeder
                     'nama_lengkap' => $santriName,
                     'kelas_id' => $kelas->id,
                     'wali_id' => $waliUser->id,
-                    'target_juz' => 'Juz 30',
+                    'target_juz' => null,
                     'progress_pct' => 0,
                     'status_aktif' => true,
                 ]);

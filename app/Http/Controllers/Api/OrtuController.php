@@ -36,8 +36,8 @@ class OrtuController extends Controller
                 ->map(fn ($items) => $items->max('ayat_selesai'))
                 ->sum();
 
-            $targetAyat = ($s->target_juz === 'Juz 30') ? 564 : 6236;
-            $realPct = min(100, (int) round(($totalAyat / max(1, $targetAyat)) * 100));
+            $targetAyat = 6236;
+            $realPct = min(100, (int) round(($totalAyat / $targetAyat) * 100));
 
             $arr['surat_selesai'] = $tuntasCount;
             $arr['total_ayat_hafal'] = $totalAyat;
@@ -127,8 +127,8 @@ class OrtuController extends Controller
 
         $tuntasCount = collect($surahProgress)->where('is_tuntas', true)->count();
         $totalAyatHafal = collect($surahProgress)->sum('ayat_hafal');
-        $targetAyat = ($santri->target_juz === 'Juz 30') ? 564 : 6236;
-        $progressPct = min(100, (int) round(($totalAyatHafal / max(1, $targetAyat)) * 100));
+        $targetAyat = 6236;
+        $progressPct = min(100, (int) round(($totalAyatHafal / $targetAyat) * 100));
 
         return response()->json([
             'success' => true,
@@ -139,7 +139,7 @@ class OrtuController extends Controller
                     'surat_selesai' => $tuntasCount,
                     'total_ayat' => $totalAyatHafal,
                     'progress_pct' => $progressPct,
-                    'target_juz' => $santri->target_juz ?? 'Juz 30',
+                    'target_juz' => null,
                 ],
                 'monthly_stats' => $monthlyStats,
                 'surahs' => $surahProgress,
