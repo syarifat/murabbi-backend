@@ -7,8 +7,8 @@ use App\Http\Controllers\Api\OrtuController;
 use App\Http\Controllers\Api\TahunAjaranController;
 use Illuminate\Support\Facades\Route;
 
-// Public Auth Routes
-Route::post('/login', [AuthController::class, 'login']);
+// Public Auth Routes (Dibatasi 5 percobaan per menit untuk mencegah brute-force)
+Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
 
 // Protected Routes (Sanctum)
 Route::middleware('auth:sanctum')->group(function () {
