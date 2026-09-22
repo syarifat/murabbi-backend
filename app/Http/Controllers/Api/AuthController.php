@@ -22,7 +22,7 @@ class AuthController extends Controller
             ->first();
 
         if (! $user || ! Hash::check($request->password, $user->password)) {
-            return response()->json(['success' => false, 'message' => 'Email/NIP atau kata sandi tidak valid.'], 401);
+            return response()->json(['success' => false, 'message' => 'Email atau kata sandi salah. Silakan coba lagi.'], 401);
         }
 
         $token = $user->createToken('auth_token')->plainTextToken;
