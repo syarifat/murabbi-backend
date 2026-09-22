@@ -333,15 +333,27 @@ class AdminController extends Controller
         ]);
     }
 
-    // Master Data - All Kelas (no filter by tahun ajaran)
-    public function masterKelasAll()
+    // Master Data - Kelas filtered by active tahun ajaran (or optional query param)
+    public function masterKelasAll(Request $request)
     {
+        $tahunAjaranAktif = $this->tahunAjaranAktif();
+        $targetTahunAjaranId = $request->query('tahun_ajaran_id', $tahunAjaranAktif->id);
+
+        $query = KelasRombel::with(['tahunAjaran']);
+
+        if ($request->query('all') !== 'true') {
+            $query->where('tahun_ajaran_id', $targetTahunAjaranId);
+        }
+
+        $kelas = $query->withCount(['santris' => fn ($q) => $q->where('tahun_ajaran_id', $targetTahunAjaranId)])
+            ->latest()
+            ->get();
+
         return response()->json([
             'success' => true,
-            'data' => KelasRombel::with(['tahunAjaran'])
-                ->withCount('santris')
-                ->latest()
-                ->get(),
+            'tahun_ajaran' => $tahunAjaranAktif,
+            'selected_tahun_ajaran_id' => (int) $targetTahunAjaranId,
+            'data' => $kelas,
         ]);
     }
 
@@ -447,13 +459,23 @@ class AdminController extends Controller
     public function storeKelas(Request $request)
     {
         $tahunAjaran = $this->tahunAjaranAktif();
+        $targetTahunAjaranId = $request->input('tahun_ajaran_id', $tahunAjaran->id);
+
         $data = $request->validate([
-            'nama_kelas' => ['required', 'string', 'max:100'],
+            'nama_kelas' => [
+                'required',
+                'string',
+                'max:100',
+                Rule::unique('kelas_rombels', 'nama_kelas')->where('tahun_ajaran_id', $targetTahunAjaranId),
+            ],
+            'tahun_ajaran_id' => ['sometimes', 'exists:tahun_ajarans,id'],
+        ], [
+            'nama_kelas.unique' => 'Nama kelas sudah ada di tahun ajaran ini',
         ]);
 
         $kelas = KelasRombel::create([
             'nama_kelas' => $data['nama_kelas'],
-            'tahun_ajaran_id' => $tahunAjaran->id,
+            'tahun_ajaran_id' => $targetTahunAjaranId,
         ]);
 
         return response()->json([
@@ -467,7 +489,16 @@ class AdminController extends Controller
     public function updateKelas(Request $request, KelasRombel $kelas)
     {
         $data = $request->validate([
-            'nama_kelas' => ['sometimes', 'string', 'max:100'],
+            'nama_kelas' => [
+                'sometimes',
+                'string',
+                'max:100',
+                Rule::unique('kelas_rombels', 'nama_kelas')
+                    ->where('tahun_ajaran_id', $kelas->tahun_ajaran_id)
+                    ->ignore($kelas->id),
+            ],
+        ], [
+            'nama_kelas.unique' => 'Nama kelas sudah ada di tahun ajaran ini',
         ]);
 
         $kelas->update($data);
@@ -485,7 +516,14 @@ class AdminController extends Controller
         if ($kelas->santris()->exists()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Tidak bisa hapus kelas yang sudah punya santri',
+                'message' => 'Tidak bisa hapus kelas yang sudah memiliki santri',
+            ], 422);
+        }
+
+        if ($kelas->pengampus()->exists()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tidak bisa hapus kelas yang masih memiliki guru pembimbing',
             ], 422);
         }
 
