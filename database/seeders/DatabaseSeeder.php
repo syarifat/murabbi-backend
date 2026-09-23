@@ -25,36 +25,36 @@ class DatabaseSeeder extends Seeder
         // 2. Admin user
         User::create([
             'name' => 'Administrator',
-            'email' => 'admin@murabbi.id',
+            'email' => 'admin@gmail.com',
             'password' => Hash::make('password123'),
             'role' => 'admin',
         ]);
 
-        // 3. Guru/Ustadz (5 Akun Guru Anonim untuk 9 kelas)
+        // 3. Guru (5 Akun Guru Anonim untuk 9 kelas)
         $guruData = [
             [
                 'name' => 'Guru 1',
-                'email' => 'guru1@murabbi.id',
+                'email' => 'guru1@gmail.com',
                 'nip' => '198501102010011001',
             ],
             [
                 'name' => 'Guru 2',
-                'email' => 'guru2@murabbi.id',
+                'email' => 'guru2@gmail.com',
                 'nip' => '198603152011011002',
             ],
             [
                 'name' => 'Guru 3',
-                'email' => 'guru3@murabbi.id',
+                'email' => 'guru3@gmail.com',
                 'nip' => '198807202012011003',
             ],
             [
                 'name' => 'Guru 4',
-                'email' => 'guru4@murabbi.id',
+                'email' => 'guru4@gmail.com',
                 'nip' => '199005122013022004',
             ],
             [
                 'name' => 'Guru 5',
-                'email' => 'guru5@murabbi.id',
+                'email' => 'guru5@gmail.com',
                 'nip' => '199209182014011005',
             ],
         ];
@@ -256,7 +256,7 @@ class DatabaseSeeder extends Seeder
 
                 $santriName = 'Siswa ' . $studentNum;
                 $waliName = 'Wali ' . $studentNum;
-                $waliEmail = 'wali' . $studentNum . '@murabbi.id';
+                $waliEmail = 'wali' . $studentNum . '@gmail.com';
 
                 $waliUser = User::create([
                     'name' => $waliName,
@@ -391,11 +391,11 @@ class DatabaseSeeder extends Seeder
 
         echo "Seeded Realistic Tahfidz Data:\n";
         echo "- 1 Tahun Ajaran Aktif (2026/2027)\n";
-        echo "- 1 Administrator (admin@murabbi.id)\n";
-        echo "- 5 Guru Ustadz/Ustadzah (5 Akun)\n";
+        echo "- 1 Administrator (admin@gmail.com)\n";
+        echo "- 5 Guru Pembimbing (5 Akun)\n";
         echo "- 9 Kelas (7A, 7B, 7C, 8A, 8B, 8C, 9A, 9B, 9C)\n";
-        echo "- " . count($allSantris) . " Santri (26-27 santri per kelas)\n";
-        echo "- 5 Akun Wali Utama (wali1 s/d wali5@murabbi.id) + " . (count($allSantris) - 5) . " Akun Wali Lainnya\n";
+        echo "- " . count($allSantris) . " Siswa (26-27 siswa per kelas)\n";
+        echo "- 5 Akun Wali Utama (wali1 s/d wali5@gmail.com) + " . (count($allSantris) - 5) . " Akun Wali Lainnya\n";
         echo "- $totalSetorans Data Setoran Realistis (30 hari terakhir s/d hari ini)\n";
         echo "- Seluruh 114 Surah Al-Qur'an\n";
     }

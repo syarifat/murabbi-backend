@@ -126,12 +126,12 @@ class AdminController extends Controller
     public function resetPassword(User $user)
     {
         $user->update([
-            'password' => Hash::make('murabbiapp'),
+            'password' => Hash::make('murobbiqu'),
         ]);
 
         return response()->json([
             'success' => true,
-            'message' => 'Kata sandi pengguna ' . $user->name . ' berhasil direset menjadi "murabbiapp".',
+            'message' => 'Kata sandi pengguna ' . $user->name . ' berhasil direset menjadi "murobbiqu".',
         ]);
     }
 

@@ -28,15 +28,15 @@ $sql .= "(1, '2026/2027', 1, '$now', '$now');\n\n";
 // 2. Admin
 $sql .= "-- 2. Admin User\n";
 $sql .= "INSERT INTO users (id, name, email, password, role, nip, no_hp, created_at, updated_at) VALUES\n";
-$sql .= "(1, 'Administrator Utama', 'admin@murabbi.id', '$passwordHash', 'admin', '198001012000031001', '081122334455', '$now', '$now');\n\n";
+$sql .= "(1, 'Administrator Utama', 'admin@gmail.com', '$passwordHash', 'admin', '198001012000031001', '081122334455', '$now', '$now');\n\n";
 
 // 3. 5 Guru
 $guruData = [
-    ['id' => 2, 'name' => 'Guru 1', 'email' => 'guru1@murabbi.id', 'nip' => '198501102010011001', 'no_hp' => '081234567801', 'jadwal' => 'Senin - Kamis, 07:30 - 09:00 WIB'],
-    ['id' => 3, 'name' => 'Guru 2', 'email' => 'guru2@murabbi.id', 'nip' => '198603152011011002', 'no_hp' => '081234567802', 'jadwal' => 'Senin - Kamis, 07:30 - 09:00 WIB'],
-    ['id' => 4, 'name' => 'Guru 3', 'email' => 'guru3@murabbi.id', 'nip' => '198807202012011003', 'no_hp' => '081234567803', 'jadwal' => 'Senin - Kamis, 13:30 - 15:00 WIB'],
-    ['id' => 5, 'name' => 'Guru 4', 'email' => 'guru4@murabbi.id', 'nip' => '199005122013022004', 'no_hp' => '081234567804', 'jadwal' => 'Senin - Kamis, 13:30 - 15:00 WIB'],
-    ['id' => 6, 'name' => 'Guru 5', 'email' => 'guru5@murabbi.id', 'nip' => '199209182014011005', 'no_hp' => '081234567805', 'jadwal' => 'Senin - Kamis, 07:30 - 09:00 WIB'],
+    ['id' => 2, 'name' => 'Guru 1', 'email' => 'guru1@gmail.com', 'nip' => '198501102010011001', 'no_hp' => '081234567801', 'jadwal' => 'Senin - Kamis, 07:30 - 09:00 WIB'],
+    ['id' => 3, 'name' => 'Guru 2', 'email' => 'guru2@gmail.com', 'nip' => '198603152011011002', 'no_hp' => '081234567802', 'jadwal' => 'Senin - Kamis, 07:30 - 09:00 WIB'],
+    ['id' => 4, 'name' => 'Guru 3', 'email' => 'guru3@gmail.com', 'nip' => '198807202012011003', 'no_hp' => '081234567803', 'jadwal' => 'Senin - Kamis, 13:30 - 15:00 WIB'],
+    ['id' => 5, 'name' => 'Guru 4', 'email' => 'guru4@gmail.com', 'nip' => '199005122013022004', 'no_hp' => '081234567804', 'jadwal' => 'Senin - Kamis, 13:30 - 15:00 WIB'],
+    ['id' => 6, 'name' => 'Guru 5', 'email' => 'guru5@gmail.com', 'nip' => '199209182014011005', 'no_hp' => '081234567805', 'jadwal' => 'Senin - Kamis, 07:30 - 09:00 WIB'],
 ];
 
 $sql .= "-- 3. 5 Akun Guru\n";
@@ -108,7 +108,7 @@ foreach ($kelasList as $k) {
             $studentNum = $nextStudentId++;
         }
 
-        $waliEmail = 'wali' . $studentNum . '@murabbi.id';
+        $waliEmail = 'wali' . $studentNum . '@gmail.com';
         $waliName = 'Wali ' . $studentNum;
         $santriName = 'Siswa ' . $studentNum;
 
