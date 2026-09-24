@@ -321,6 +321,84 @@ class AdminController extends Controller
         return response()->json(['success' => true, 'data' => ['tahun_ajaran' => $tahunAjaran, 'rekap_kelas' => $rekapKelas]]);
     }
 
+    public function exportLaporanCsv()
+    {
+        $tahunAjaran = $this->tahunAjaranAktif();
+        $rekapKelas = KelasRombel::with(['santris' => fn ($q) => $q->where('tahun_ajaran_id', $tahunAjaran->id)])
+            ->withCount(['santris' => fn ($q) => $q->where('tahun_ajaran_id', $tahunAjaran->id)])
+            ->where('tahun_ajaran_id', $tahunAjaran->id)
+            ->get()
+            ->map(function ($kelas) use ($tahunAjaran) {
+                $setoran = Setoran::where('tahun_ajaran_id', $tahunAjaran->id)
+                    ->whereHas('santri', fn ($q) => $q->where('kelas_id', $kelas->id))
+                    ->get();
+                $total = $setoran->count();
+                $lancar = $setoran->where('status', 'lancar')->count();
+                $ulang = $setoran->where('status', 'mengulang')->count();
+
+                return [
+                    'kelas' => $kelas->nama_kelas,
+                    'santri' => $kelas->santris_count,
+                    'lancar' => $lancar,
+                    'pct' => ($total ? round(($lancar / $total) * 100) : 0).'%',
+                    'ulang' => $ulang,
+                ];
+            });
+
+        $filename = 'Laporan_Global_Tahfidz_' . str_replace(['/', '\\', ' '], '_', $tahunAjaran->nama) . '.csv';
+
+        $headers = [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => "attachment; filename=\"$filename\"",
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0',
+        ];
+
+        $callback = function () use ($tahunAjaran, $rekapKelas) {
+            $file = fopen('php://output', 'w');
+            // Write UTF-8 BOM for Microsoft Excel
+            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+
+            fputcsv($file, ['MUROBBI-QU - SISTEM INFORMASI MONITORING TAHFIDZ']);
+            fputcsv($file, ['LAPORAN GLOBAL REKAPITULASI HAFALAN SISWA']);
+            fputcsv($file, ['Tahun Ajaran', $tahunAjaran->nama]);
+            fputcsv($file, ['Tanggal Unduh', date('d/m/Y H:i:s')]);
+            fputcsv($file, []);
+
+            // Table headers
+            fputcsv($file, ['No', 'Kelas', 'Jumlah Siswa', 'Setoran Lancar', 'Persentase Kelancaran', 'Setoran Mengulang']);
+
+            $totalSiswa = 0;
+            $totalLancar = 0;
+            $totalUlang = 0;
+
+            foreach ($rekapKelas as $idx => $r) {
+                $totalSiswa += $r['santri'];
+                $totalLancar += $r['lancar'];
+                $totalUlang += $r['ulang'];
+
+                fputcsv($file, [
+                    $idx + 1,
+                    $r['kelas'],
+                    $r['santri'],
+                    $r['lancar'],
+                    $r['pct'],
+                    $r['ulang'],
+                ]);
+            }
+
+            fputcsv($file, []);
+            $totalSetoran = $totalLancar + $totalUlang;
+            $avgPct = $totalSetoran > 0 ? round(($totalLancar / $totalSetoran) * 100).'%' : '0%';
+            fputcsv($file, ['TOTAL', '-', $totalSiswa, $totalLancar, $avgPct, $totalUlang]);
+
+            fclose($file);
+        };
+
+        return response()->streamDownload($callback, $filename, $headers);
+    }
+
     // Master Data - All Santris (no filter by tahun ajaran)
     public function masterSantriAll()
     {

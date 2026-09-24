@@ -51,6 +51,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/mapping/{mapping}', [AdminController::class, 'updateMapping']);
         Route::delete('/mapping/{mapping}', [AdminController::class, 'deleteMapping']);
         Route::get('/laporan', [AdminController::class, 'laporanGlobal']);
+        Route::get('/laporan/export-csv', [AdminController::class, 'exportLaporanCsv']);
 
         // Master Data Routes
         Route::get('/master/tahun-ajaran', [TahunAjaranController::class, 'index']);
